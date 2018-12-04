@@ -164,7 +164,7 @@ namespace GoogleARCore.Examples
             touch = Input.GetTouch(0);
             if (Input.touchCount == 1 && touch.phase == TouchPhase.Moved)
             {
-                ARObject.transform.Rotate(Vector3.forward * 40f * Time.deltaTime * touch.deltaPosition.y, Space.Self);
+                ARObject.transform.Rotate(Vector3.up * 40f * Time.deltaTime * touch.deltaPosition.y, Space.Self);
                 Debug.Log("Delta Touch is " + touch.deltaPosition);
             }
 
@@ -208,7 +208,7 @@ namespace GoogleARCore.Examples
                         {
 
                             ARObject = Instantiate(ARAndroidPrefab, hit.Pose.position, hit.Pose.rotation);// Instantiate Andy model at the hit pose.                                                                                 
-                            ARObject.transform.Rotate(-90, 0, 0, Space.Self);// Compensate for the hitPose rotation facing away from the raycast (i.e. camera).
+                            ARObject.transform.Rotate(0, 180, 0, Space.Self);// Compensate for the hitPose rotation facing away from the raycast (i.e. camera).
                             var anchor = hit.Trackable.CreateAnchor(hit.Pose);
                             ARObject.transform.parent = anchor.transform;
                             CurrentNumberOfGameObjects = CurrentNumberOfGameObjects + 1;
