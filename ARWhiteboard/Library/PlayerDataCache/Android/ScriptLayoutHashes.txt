@@ -1,6 +1,6 @@
 Android
 PlayerPath?
-/Users/johnshea/Desktop/sdp/ARWhiteboard/ARWhiteboard.apk
+/Users/johnshea/Desktop/sdp/ARWhiteboard/ARWhiteboard_2.apk
 SceneListBegin?
 Assets/Placement.unity
 SceneListEnd?
@@ -316,3 +316,4 @@ aa5e3523afd7fd907d3f99da4b777fdc Vuforia.UnityExtensions.dll:Vuforia.VuforiaConf
 c8a41ce4eea7677f6dd2aa0e422a2f04 Vuforia.UnityExtensions.dll:Vuforia.VuMarkBehaviour
 c31ff9acb65f7a15b5c6fd77c3314d83 Vuforia.UnityExtensions.dll:Vuforia.WireframeBehaviour
 486cd95c82d8305219c352c06b776e1f Vuforia.UnityExtensions.dll:Vuforia.WireframeTrackableEventHandler
+3a5f0b47c531d2c4ed2975a749f897d2 Assembly-CSharp.dll:.TexturePainter
