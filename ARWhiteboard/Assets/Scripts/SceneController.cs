@@ -33,6 +33,7 @@ namespace GoogleARCore.Examples
         //For Pinch to Zoom
         float prevTouchDistance;
         float zoomSpeed = 0.2f;
+        private bool lockObject = false;
 
         public void Update()
         {
@@ -120,17 +121,17 @@ namespace GoogleARCore.Examples
         {
             Touch touch;
             touch = Input.GetTouch(0);
-
- 
             if (Input.touchCount != 0)
             {
-                _SpawnARObject();
-                _PinchtoZoom();
-                _Rotate();
-                _Remove();
+                _LockObject();
+                if(lockObject == false)
+                {
+                    _SpawnARObject();
+                    _PinchtoZoom();
+                    _Rotate();
+                    //_Remove();
+                }
             }
-
-
         }
         public void _PinchtoZoom()
         {
@@ -170,12 +171,19 @@ namespace GoogleARCore.Examples
 
         
         }
-        public void _Remove()
+        //public void _Remove()
+        //{
+        //    if(Input.touchCount == 4)
+        //    {
+        //        Destroy(ARObject);
+        //        CurrentNumberOfGameObjects -= 1;
+        //    }
+        //}
+        public void _LockObject()
         {
             if(Input.touchCount == 3)
             {
-                Destroy(ARObject);
-                CurrentNumberOfGameObjects -= 1;
+                lockObject = !lockObject;
             }
         }
         public void _SpawnARObject()
@@ -227,8 +235,6 @@ namespace GoogleARCore.Examples
             }
 
         }
-
-
     }
 }
 
