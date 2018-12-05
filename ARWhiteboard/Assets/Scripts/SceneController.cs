@@ -33,6 +33,7 @@ namespace GoogleARCore.Examples
         //For Pinch to Zoom
         float prevTouchDistance;
         float zoomSpeed = 0.2f;
+        private bool lockObject = false;
 
         public void Update()
         {
@@ -120,17 +121,17 @@ namespace GoogleARCore.Examples
         {
             Touch touch;
             touch = Input.GetTouch(0);
-
- 
             if (Input.touchCount != 0)
             {
-                _SpawnARObject();
-                _PinchtoZoom();
-                _Rotate();
-                _Remove();
+                _LockObject();
+                if(lockObject == false)
+                {
+                    _SpawnARObject();
+                    _PinchtoZoom();
+                    _Rotate();
+                    //_Remove();
+                }
             }
-
-
         }
         public void _PinchtoZoom()
         {
@@ -164,18 +165,25 @@ namespace GoogleARCore.Examples
             touch = Input.GetTouch(0);
             if (Input.touchCount == 1 && touch.phase == TouchPhase.Moved)
             {
-                ARObject.transform.Rotate(Vector3.forward * 40f * Time.deltaTime * touch.deltaPosition.y, Space.Self);
+                ARObject.transform.Rotate(Vector3.up * 40f * Time.deltaTime * touch.deltaPosition.y, Space.Self);
                 Debug.Log("Delta Touch is " + touch.deltaPosition);
             }
 
         
         }
-        public void _Remove()
+        //public void _Remove()
+        //{
+        //    if(Input.touchCount == 4)
+        //    {
+        //        Destroy(ARObject);
+        //        CurrentNumberOfGameObjects -= 1;
+        //    }
+        //}
+        public void _LockObject()
         {
             if(Input.touchCount == 3)
             {
-                Destroy(ARObject);
-                CurrentNumberOfGameObjects -= 1;
+                lockObject = !lockObject;
             }
         }
         public void _SpawnARObject()
@@ -208,7 +216,7 @@ namespace GoogleARCore.Examples
                         {
 
                             ARObject = Instantiate(ARAndroidPrefab, hit.Pose.position, hit.Pose.rotation);// Instantiate Andy model at the hit pose.                                                                                 
-                            ARObject.transform.Rotate(-90, 0, 0, Space.Self);// Compensate for the hitPose rotation facing away from the raycast (i.e. camera).
+                            ARObject.transform.Rotate(0, 180, 0, Space.Self);// Compensate for the hitPose rotation facing away from the raycast (i.e. camera).
                             var anchor = hit.Trackable.CreateAnchor(hit.Pose);
                             ARObject.transform.parent = anchor.transform;
                             CurrentNumberOfGameObjects = CurrentNumberOfGameObjects + 1;
@@ -227,8 +235,6 @@ namespace GoogleARCore.Examples
             }
 
         }
-
-
     }
 }
 

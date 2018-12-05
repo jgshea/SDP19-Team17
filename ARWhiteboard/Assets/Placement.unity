@@ -273,7 +273,8 @@ MonoBehaviour:
   FirstPersonCamera: {fileID: 896679035}
   DetectedPlanePrefab: {fileID: 1654175882956584, guid: 6a35c744e5010405c847fad90282d2be,
     type: 2}
-  ARAndroidPrefab: {fileID: 164190, guid: 14691c451e07ff94cb94be3f44e72ab7, type: 2}
+  ARAndroidPrefab: {fileID: 1188414726294622, guid: 62e3e3d2db3c6497484a1f4eaafce174,
+    type: 2}
   SearchingForPlaneUI: {fileID: 1133631540}
 --- !u!20 &896679035 stripped
 Camera:
