@@ -13,8 +13,8 @@ public class TexturePainter : MonoBehaviour {
 
     public Color foregroundColor = Color.black;
     public Color backgroundColor = Color.white;
+    private Color prevColor;
 
-    
     Texture2D canvas;
     
     //1024x768
@@ -60,7 +60,7 @@ public class TexturePainter : MonoBehaviour {
         //canvas.filterMode = FilterMode.Point;
         GetComponent<MeshRenderer>().material.SetTexture("_MainTex", canvas);
         canvas.Apply();
-        
+        prevColor = foregroundColor;
 
         // Load the Image from somewhere on disk
 
@@ -87,27 +87,50 @@ public class TexturePainter : MonoBehaviour {
         {
             var pixelCoords = uv2PixelCoords(hitInfo.textureCoord);
             //800
+            //draw
             if (pixelCoords.x < 800)
             {
+
                 Stroke(pixelCoords.x, pixelCoords.y, foregroundColor);
             }
-            else if (pixelCoords.x > 837 && pixelCoords.x < 986 && pixelCoords.y  < 458 && pixelCoords.y > 341)
+            //change color
+            else if (pixelCoords.x > 837 && pixelCoords.x < 986 && pixelCoords.y  < 946 && pixelCoords.y > 737)
             {
                 foregroundColor = canvas.GetPixel(pixelCoords.x, pixelCoords.y);
+                prevColor = canvas.GetPixel(pixelCoords.x, pixelCoords.y);
+            }
+            //marker tool
+            else if (pixelCoords.x > 814 && pixelCoords.x < 910 && pixelCoords.y < 382 && pixelCoords.y > 188)
+            {
+                //Debug.Log(prevColor.ToString());
+                foregroundColor = prevColor;
+            }
+            //eraser tool
+            else if (pixelCoords.x > 915 && pixelCoords.x < 1009 && pixelCoords.y < 382 && pixelCoords.y > 188)
+            {
+                foregroundColor = backgroundColor;   
+            }
+            //clear all
+            else if (pixelCoords.x > 814 && pixelCoords.x < 910 && pixelCoords.y < 166 && pixelCoords.y > 13)
+            {
+                for (int i = 0; i <= 800; i++)
+                {
+                    for (int j = 0; j <= canvasHeight; j++) 
+                        canvas.SetPixel(i, j, backgroundColor);
+                }
+                canvas.Apply();
             }
         }
     }
 
     void Stroke(int x, int y, Color color)
     {
-        
-        //x left 837 x right 986 y top 458 y bottom 341
-        //Debug.Log("x: " + x + ", y: " + y);
+        Debug.Log("x: " + x + ", y: " + y);
         for (int i = x-9; i <= x+9; i++)
         {
             for (int j = y-9; j <= y+9; j++)
             {
-                if (j < canvasHeight && j > 0 && i < canvasWidth - 278 && i > 0)
+                if (j < canvasHeight && j > 0 && i < 800 && i > 0)
                     canvas.SetPixel(i, j, color);
             }
         }
