@@ -30,10 +30,10 @@ namespace GoogleARCore.Examples
         private bool                m_IsQuitting = false;
         public static int           CurrentNumberOfGameObjects = 0;
         private int                 numberOfGameObjectsAllowed = 1;
-        //For Pinch to Zoom
         float prevTouchDistance;
         float zoomSpeed = 0.2f;
         private bool lockObject = false;
+        private int lockCount = 0;
 
         public void Update()
         {
@@ -115,7 +115,6 @@ namespace GoogleARCore.Examples
             }
 
             SearchingForPlaneUI.SetActive(showSearchingUI);
-
         }
         public void _InstantiateOnTouch()
         {
@@ -181,9 +180,26 @@ namespace GoogleARCore.Examples
         //}
         public void _LockObject()
         {
-            if(Input.touchCount == 3)
+            if (lockCount <= 0)
             {
-                lockObject = !lockObject;
+                if (Input.touchCount == 3)
+                {
+                    lockObject = !lockObject;
+                    if (lockObject)
+                    {
+                        _ShowAndroidToastMessage("Locked");
+                    }
+                    else
+                    {
+                        _ShowAndroidToastMessage("Unlocked");
+                    }
+                    lockCount = 10;
+                    _HideDetectedPlanes();
+                }
+            }
+            else
+            {
+                lockCount--;
             }
         }
         public void _SpawnARObject()
@@ -220,12 +236,8 @@ namespace GoogleARCore.Examples
                             var anchor = hit.Trackable.CreateAnchor(hit.Pose);
                             ARObject.transform.parent = anchor.transform;
                             CurrentNumberOfGameObjects = CurrentNumberOfGameObjects + 1;
-
                             // Hide Plane once ARObject is Instantiated 
-                            foreach (GameObject Temp in DetectedPlaneGenerator.instance.PLANES) //RK
-                            {
-                                Temp.SetActive(false);
-                            }
+                            _HideDetectedPlanes();
                         }
 
                     }
@@ -234,6 +246,13 @@ namespace GoogleARCore.Examples
 
             }
 
+        }
+        public void _HideDetectedPlanes()
+        {
+            foreach (GameObject Temp in DetectedPlaneGenerator.instance.PLANES) //RK
+            {
+                Temp.SetActive(false);
+            }
         }
     }
 }

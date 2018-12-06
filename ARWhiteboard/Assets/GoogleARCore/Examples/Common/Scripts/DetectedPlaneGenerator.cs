@@ -62,8 +62,6 @@ namespace GoogleARCore.Examples.Common
 
 
         }
-
-
         public void Update()
         {
             // Check that motion tracking is tracking.
