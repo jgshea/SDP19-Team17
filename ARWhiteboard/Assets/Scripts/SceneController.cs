@@ -1,19 +1,10 @@
-﻿/*=================================================
-==Adapted by  : Ritesh Kanjee(Augmented Startups)==
-==Date        : 23 May 2018      				 ==
-==Revision    : 1.4 				 		  	 ==	
-==Description : Modified HelloAR Controller  	 ==
-== Ver 1.2	    Cleaned Code - Vertical Plane    ==
-== Ver 1.3	   	Updated for ARCore 1.2         	 ==	
-== Ver 1.4	   	Added Gesture Control        	 ==	
-==================================================*/
-namespace GoogleARCore.Examples
+﻿namespace GoogleARCore.Examples
 {
     using System.Collections.Generic;
-    using System.Collections;
     using GoogleARCore;
     using GoogleARCore.Examples.Common;
     using UnityEngine;
+    using UnityEngine.UI;
 
 #if UNITY_EDITOR
     using Input = InstantPreviewInput;
@@ -21,19 +12,32 @@ namespace GoogleARCore.Examples
 
     public class SceneController : MonoBehaviour
     {
-        public Camera               FirstPersonCamera;
-        public GameObject           DetectedPlanePrefab;
-        public GameObject           ARAndroidPrefab;
-        public GameObject           SearchingForPlaneUI;
-        private GameObject          ARObject;
+        public Button DeleteButton;
+        public Button LockButton;
+
+        public Camera FirstPersonCamera;
+        public GameObject DetectedPlanePrefab;
+        public GameObject ARAndroidPrefab;
+        public GameObject SearchingForPlaneUI;
+        private GameObject ARObject;
         private List<DetectedPlane> m_AllPlanes = new List<DetectedPlane>();
-        private bool                m_IsQuitting = false;
-        public static int           CurrentNumberOfGameObjects = 0;
-        private int                 numberOfGameObjectsAllowed = 1;
+        private bool m_IsQuitting = false;
+
+        public static int CurrentNumberOfGameObjects = 0;
+        private int numberOfGameObjectsAllowed = 1;
+
         //For Pinch to Zoom
         float prevTouchDistance;
-        float zoomSpeed = 0.2f;
-        private bool lockObject = false;
+        float zoomSpeed = 0.1f;
+
+        private bool locked;
+
+        public void Start()
+        {
+            DeleteButton.onClick.AddListener(Remove);
+            LockButton.onClick.AddListener(Lock);
+            locked = false;
+        }
 
         public void Update()
         {
@@ -80,10 +84,12 @@ namespace GoogleARCore.Examples
                 Invoke("_DoQuit", 0.5f);
             }
         }
+
         private void _DoQuit()
         {
             Application.Quit();
         }
+
         private void _ShowAndroidToastMessage(string message)
         {
             AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
@@ -100,6 +106,7 @@ namespace GoogleARCore.Examples
                 }));
             }
         }
+
         public void _PlaneDetection()
         {
             // Hide snackbar when currently tracking at least one plane.
@@ -113,26 +120,24 @@ namespace GoogleARCore.Examples
                     break;
                 }
             }
-
             SearchingForPlaneUI.SetActive(showSearchingUI);
-
         }
+
         public void _InstantiateOnTouch()
         {
             Touch touch;
             touch = Input.GetTouch(0);
             if (Input.touchCount != 0)
             {
-                _LockObject();
-                if(lockObject == false)
+                if (locked == false)
                 {
                     _SpawnARObject();
                     _PinchtoZoom();
                     _Rotate();
-                    //_Remove();
                 }
             }
         }
+
         public void _PinchtoZoom()
         {
             if (Input.touchCount == 2)
@@ -155,10 +160,9 @@ namespace GoogleARCore.Examples
 
                 float pinchAmount = deltaMagnitudeDiff * 0.02f * Time.deltaTime;
                 ARObject.transform.localScale += new Vector3(pinchAmount, pinchAmount, pinchAmount);
-
-
             }
         }
+
         public void _Rotate()
         {
             Touch touch;
@@ -168,24 +172,20 @@ namespace GoogleARCore.Examples
                 ARObject.transform.Rotate(Vector3.up * 40f * Time.deltaTime * touch.deltaPosition.y, Space.Self);
                 Debug.Log("Delta Touch is " + touch.deltaPosition);
             }
+        }
 
-        
-        }
-        //public void _Remove()
-        //{
-        //    if(Input.touchCount == 4)
-        //    {
-        //        Destroy(ARObject);
-        //        CurrentNumberOfGameObjects -= 1;
-        //    }
-        //}
-        public void _LockObject()
+        public void Remove()
         {
-            if(Input.touchCount == 3)
-            {
-                lockObject = !lockObject;
-            }
+            Destroy(ARObject);
+            CurrentNumberOfGameObjects -= 1;
+            locked = false;
         }
+
+        public void Lock()
+        {
+            locked = !locked;
+        }
+
         public void _SpawnARObject()
         {
             Touch touch;
@@ -214,14 +214,13 @@ namespace GoogleARCore.Examples
                         }
                         else
                         {
-
-                            ARObject = Instantiate(ARAndroidPrefab, hit.Pose.position, hit.Pose.rotation);// Instantiate Andy model at the hit pose.                                                                                 
+                            ARObject = Instantiate(ARAndroidPrefab, hit.Pose.position, hit.Pose.rotation);// Instantiate Andy model at the hit pose.
                             ARObject.transform.Rotate(0, 180, 0, Space.Self);// Compensate for the hitPose rotation facing away from the raycast (i.e. camera).
                             var anchor = hit.Trackable.CreateAnchor(hit.Pose);
                             ARObject.transform.parent = anchor.transform;
                             CurrentNumberOfGameObjects = CurrentNumberOfGameObjects + 1;
 
-                            // Hide Plane once ARObject is Instantiated 
+                            // Hide Plane once ARObject is Instantiated
                             foreach (GameObject Temp in DetectedPlaneGenerator.instance.PLANES) //RK
                             {
                                 Temp.SetActive(false);
