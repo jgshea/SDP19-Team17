@@ -1,15 +1,16 @@
 ﻿<Properties StartupConfiguration="{4ECB20F4-ADF7-C383-476C-3DFBF0E3B2E8}|">
-  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="Unity.Editor" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/SceneController.cs">
     <Files>
       <File FileName="Assets/GoogleARCore/Examples/Common/Scripts/DetectedPlaneGenerator.cs" Line="90" Column="1" />
+      <File FileName="Assets/3D painter/TexturePainter.cs" Line="46" Column="5" />
       <File FileName="Assets/Scripts/SceneController.cs" Line="209" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="Unity.Editor" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MultiItemStartupConfigurations />
 </Properties>

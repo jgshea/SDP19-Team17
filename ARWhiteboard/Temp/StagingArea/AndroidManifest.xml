@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" package="com.Team17.ARWhiteboard" android:versionCode="1" android:versionName="0.1" android:installLocation="preferExternal">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" package="com.team17.ARWhiteboard" android:versionCode="1" android:versionName="0.1" android:installLocation="preferExternal">
   <uses-sdk android:minSdkVersion="24" android:targetSdkVersion="28" />
   <supports-screens android:anyDensity="true" android:largeScreens="true" android:normalScreens="true" android:smallScreens="true" android:xlargeScreens="true" />
+  <meta-data android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" android:resource="@xml/device_filter" />
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
   <uses-permission android:name="android.permission.READ_PHONE_STATE" />
   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
   <uses-feature android:name="android.hardware.camera.ar" android:required="true" />
-  <application android:icon="@mipmap/app_icon" android:label="@string/app_name" android:theme="@style/UnityThemeSelector" android:debuggable="false" android:isGame="true" android:banner="@drawable/app_banner">
+  <application android:allowBackup="true" android:icon="@mipmap/app_icon" android:label="@string/app_name" android:supportsRtl="true" android:theme="@style/UnityThemeSelector" android:debuggable="false" android:isGame="true" android:banner="@drawable/app_banner">
     <activity android:name="com.unity3d.player.UnityPlayerActivity" android:label="@string/app_name" android:screenOrientation="fullSensor" android:launchMode="singleTask" android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|fontScale|layoutDirection|density" android:hardwareAccelerated="false">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
@@ -22,7 +23,7 @@
     <meta-data android:name="com.google.ar.core" android:value="required" />
     <meta-data android:name="unity.tango-enable" android:value="True" />
     <meta-data android:name="unityplayer.SkipPermissionsDialog" android:value="true" />
-    <meta-data android:name="unity.build-id" android:value="d181273e-eadf-44ef-a359-55556178e8d3" />
+    <meta-data android:name="unity.build-id" android:value="6a31e22a-f562-4e60-a310-dfe7ba276da6" />
     <meta-data android:name="unity.splash-mode" android:value="0" />
     <meta-data android:name="unity.splash-enable" android:value="True" />
   </application>
@@ -32,4 +33,5 @@
   <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
   <uses-feature android:name="android.hardware.touchscreen.multitouch" android:required="false" />
   <uses-feature android:name="android.hardware.touchscreen.multitouch.distinct" android:required="false" />
+  <uses-feature android:name="android.hardware.usb.host" />
 </manifest>
