@@ -742,7 +742,7 @@ PlayerSettings:
   cloudServicesEnabled:
     UNet: 1
   facebookSdkVersion: 7.9.4
-  apiCompatibilityLevel: 2
+  apiCompatibilityLevel: 3
   cloudProjectId: bc653d51-8bf9-4b2f-b6d3-39348f76edc6
   projectName: ARWhiteboard
   organizationId: jgshea
