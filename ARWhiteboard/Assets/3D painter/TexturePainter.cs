@@ -212,7 +212,7 @@ public class TexturePainter : MonoBehaviour {
     class AndroidSerialHelperCallback : AndroidJavaProxy
     {
         public AndroidSerialHelperCallback() : base("com.team17.serialtool1.SerialHelperCallback") { }
-        public void readData(string data)
+        public void receiveData(string data)
         {
             string[] values = data.Split(',');
             x = Convert.ToInt32(values[0]);
