@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\3D painter\TexturePainter.cs" />
+    <Compile Include="Assets\3D painter\TexturePainter_RC.cs" />
     <Compile Include="Assets\GoogleARCore\Examples\AugmentedImage\Scripts\AugmentedImageExampleController.cs" />
     <Compile Include="Assets\GoogleARCore\Examples\AugmentedImage\Scripts\AugmentedImageVisualizer.cs" />
     <Compile Include="Assets\GoogleARCore\Examples\CloudAnchors\Scripts\AnchorIdFromRoomRequestMessage.cs" />

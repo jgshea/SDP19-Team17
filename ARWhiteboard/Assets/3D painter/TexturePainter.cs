@@ -56,7 +56,7 @@ public class TexturePainter : MonoBehaviour {
 
     void CreateBackground()
     {
-        Texture2D tex = Resources.Load("back") as Texture2D;
+        Texture2D tex = Resources.Load("whiteBoardObject") as Texture2D;
         canvasWidth = tex.width;
         canvasHeight = tex.height;
         canvas = new Texture2D(canvasWidth, canvasHeight, TextureFormat.ARGB32, false);
@@ -71,7 +71,7 @@ public class TexturePainter : MonoBehaviour {
         //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         // RaycastHit hitInfo;
         //int x = Convert.ToInt32(values[0]);
-        //int y = Convert.ToInt32(values[1]);
+        //int y = Convert.ToInt32(values[1]);x
 
         if (x == 1023 && y == 1023)
         {
