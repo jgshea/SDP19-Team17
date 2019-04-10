@@ -3,7 +3,7 @@ using System;
 
 public class TexturePainter_RC : MonoBehaviour
 {
-
+    public Camera IRCamera;
     [Range(1, 2048)]
     private int canvasWidth;
     [Range(1, 2048)]
@@ -28,7 +28,7 @@ public class TexturePainter_RC : MonoBehaviour
 
     void Start()
     {
-        x = 0;
+        IRCamera = GameObject.FindWithTag("IRCamera").GetComponent<Camera>();
         y = 0;
         foregroundColor = Color.black;
         backgroundColor = Color.white;
@@ -60,16 +60,39 @@ public class TexturePainter_RC : MonoBehaviour
 
     void MousePressed()
     {
-        Ray ray = Camera.main.ScreenPointToRay(new Vector3(x,y));
+        if((x == 1023 && y == 1023) || (x == 0 && y == 0))
+        {
+            prevX = -1;
+            prevY = -1;
+            return;
+        }
+        float nx = (float)x;
+        float ny = (float)y;
+        nx = nx / 1024;
+        ny = ny / 768;
+        Ray ray = IRCamera.ViewportPointToRay(new Vector3(nx,ny));
+        //Vector3 origin = Camera.main.ViewportToWorldPoint(new Vector3(nx, ny));
         RaycastHit hitInfo;
         if (Physics.Raycast(ray, out hitInfo))
+        //if (Physics.Raycast(origin,direction, out hitInfo))
         {
             var pixelCoords = uv2PixelCoords(hitInfo.textureCoord);
             //800
             //draw
             if (pixelCoords.x < 800)
             {
-                Stroke(pixelCoords.x, pixelCoords.y, foregroundColor);
+                //Stroke(pixelCoords.x, pixelCoords.y, foregroundColor);
+                if (x < 800)
+                {
+                    if (prevX == -1 || prevY == -1)
+                    {
+                        prevX = pixelCoords.x;
+                        prevY = pixelCoords.y;
+                    }
+                    DrawLine(prevX, prevY, pixelCoords.x, pixelCoords.y, foregroundColor);
+                    prevX = pixelCoords.x;
+                    prevY = pixelCoords.y;
+                }
             }
             //change color
             else if (pixelCoords.x > 837 && pixelCoords.x < 986 &&
@@ -151,61 +174,61 @@ public class TexturePainter_RC : MonoBehaviour
     }
 
 
-    //void DrawCircle(int x, int y, Color color)
-    //{
-    //    //Debug.Log("x: " + x + ", y: " + y);
-    //    for (int yn = -radius; yn <= radius; yn++)
-    //    {
-    //        for (int xn = -radius; xn <= radius; xn++)
-    //        {
-    //            if (y + yn < canvasHeight && y + yn > 0 && x + xn < 800 && x + xn > 0)
-    //            {
-    //                if (xn * xn + yn * yn <= radius * radius && marker)
-    //                    canvas.SetPixel(x + xn, y + yn, color);
-    //                else if (!marker)
-    //                    canvas.SetPixel(x + xn, y + yn, color);
-    //            }
-    //        }
-    //    }
+    void DrawCircle(int x, int y, Color color)
+    {
+        //Debug.Log("x: " + x + ", y: " + y);
+        for (int yn = -radius; yn <= radius; yn++)
+        {
+            for (int xn = -radius; xn <= radius; xn++)
+            {
+                if (y + yn < canvasHeight && y + yn > 0 && x + xn < 800 && x + xn > 0)
+                {
+                    if (xn * xn + yn * yn <= radius * radius && marker)
+                        canvas.SetPixel(x + xn, y + yn, color);
+                    else if (!marker)
+                        canvas.SetPixel(x + xn, y + yn, color);
+                }
+            }
+        }
 
-    //}
+    }
 
-    //void Bresenham(int x0, int y0, int x1, int y1, bool reversedAxis, Color color)
-    //{
-    //    double deltax = x1 - x0;
-    //    double deltay = y1 - y0;
-    //    double deltaerr = Math.Abs(deltay / deltax);
-    //    double error = 0.0f;
-    //    int y = y0;
-    //    for (int x = x0; x <= x1; x++)
-    //    {
-    //        if (reversedAxis)
-    //            DrawCircle(y, x, color);
-    //        else
-    //            DrawCircle(x, y, color);
-    //        error = error + deltaerr;
-    //        if (error >= 0.5f)
-    //        {
-    //            y = y + Math.Sign(deltay) * 1;
-    //            error = error - 1.0f;
-    //        }
-    //    }
-    //    canvas.Apply();
-    //}
+    void Bresenham(int x0, int y0, int x1, int y1, bool reversedAxis, Color color)
+    {
+        double deltax = x1 - x0;
+        double deltay = y1 - y0;
+        double deltaerr = Math.Abs(deltay / deltax);
+        double error = 0.0f;
+        int y = y0;
+        for (int x = x0; x <= x1; x++)
+        {
+            if (reversedAxis)
+                DrawCircle(y, x, color);
+            else
+                DrawCircle(x, y, color);
+            error = error + deltaerr;
+            if (error >= 0.5f)
+            {
+                y = y + Math.Sign(deltay) * 1;
+                error = error - 1.0f;
+            }
+        }
+        canvas.Apply();
+    }
 
-    //void DrawLine(int x0, int y0, int x1, int y1, Color color)
-    //{
-    //    if (Math.Abs(y1 - y0) < Math.Abs(x1 - x0))
-    //        if (x0 <= x1)
-    //            Bresenham(x0, y0, x1, y1, false, color);
-    //        else
-    //            Bresenham(x1, y1, x0, y0, false, color);
-    //    else
-    //        if (y0 <= y1)
-    //        Bresenham(y0, x0, y1, x1, true, color);
-    //    else
-    //        Bresenham(y1, x1, y0, x0, true, color);
-    //}
+    void DrawLine(int x0, int y0, int x1, int y1, Color color)
+    {
+        if (Math.Abs(y1 - y0) < Math.Abs(x1 - x0))
+            if (x0 <= x1)
+                Bresenham(x0, y0, x1, y1, false, color);
+            else
+                Bresenham(x1, y1, x0, y0, false, color);
+        else
+            if (y0 <= y1)
+            Bresenham(y0, x0, y1, x1, true, color);
+        else
+            Bresenham(y1, x1, y0, x0, true, color);
+    }
 
     class AndroidSerialHelperCallback : AndroidJavaProxy
     {
