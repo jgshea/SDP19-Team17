@@ -1,6 +1,6 @@
 Android
 PlayerPath?
-/Users/johnshea/Desktop/sdp/ARWhiteboard/ARWhiteboard_with_data_trans_rc_stereo_algo.apk
+/Users/johnshea/Desktop/sdp/ARWhiteboard/ARWhiteboard_with_data_trans_rc_stereo_algo_mp.apk
 SceneListBegin?
 Assets/Placement.unity
 SceneListEnd?
@@ -318,3 +318,6 @@ aa5e3523afd7fd907d3f99da4b777fdc Vuforia.UnityExtensions.dll:Vuforia.VuforiaConf
 c8a41ce4eea7677f6dd2aa0e422a2f04 Vuforia.UnityExtensions.dll:Vuforia.VuMarkBehaviour
 c31ff9acb65f7a15b5c6fd77c3314d83 Vuforia.UnityExtensions.dll:Vuforia.WireframeBehaviour
 486cd95c82d8305219c352c06b776e1f Vuforia.UnityExtensions.dll:Vuforia.WireframeTrackableEventHandler
+7e4e613fdd98050e382376111b336557 Assembly-CSharp.dll:Project.Networking.NetworkManager
+7e4e613fdd98050e382376111b336557 Assembly-CSharp.dll:SocketIO.SocketIOComponent
+486cd95c82d8305219c352c06b776e1f Assembly-CSharp.dll:.TestSocketIO

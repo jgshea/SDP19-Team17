@@ -36,7 +36,7 @@ public class TexturePainter_RC : MonoBehaviour
         IRCamera = GameObject.FindWithTag("IRCamera").GetComponent<Camera>();
         y = 0;
         foregroundColor = Color.black;
-        backgroundColor = Color.white;
+        backgroundColor = Color.clear;
         radius = 6;
         marker = true;
         CreateBackground();
@@ -123,7 +123,7 @@ public class TexturePainter_RC : MonoBehaviour
                         prevX = pixelCoords.x;
                         prevY = pixelCoords.y;
                     }
-                    DrawLine(prevX, prevY, x, y, radius, foregroundColor, true);
+                    DrawLine(prevX, prevY, pixelCoords.x, pixelCoords.y, radius, foregroundColor, true);
                     prevX = pixelCoords.x;
                     prevY = pixelCoords.y;
                 }
@@ -178,12 +178,13 @@ public class TexturePainter_RC : MonoBehaviour
 
     public void Clear(bool broadcast)
     {
-        for (int i = 0; i <= 800; i++)
+        /*for (int i = 0; i <= 800; i++)
         {
             for (int j = 0; j <= canvasHeight; j++)
                 canvas.SetPixel(i, j, backgroundColor);
         }
-        canvas.Apply();
+        canvas.Apply();*/
+        CreateBackground();
         if (broadcast) getNetwork().Clear();
     }
 

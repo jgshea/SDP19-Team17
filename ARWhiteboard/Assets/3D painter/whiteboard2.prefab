@@ -24,6 +24,7 @@ GameObject:
   - component: {fileID: 64718749157988724}
   - component: {fileID: 114598121930544232}
   - component: {fileID: 114992921774025608}
+  - component: {fileID: 114531566812790530}
   m_Layer: 0
   m_Name: whiteboard2
   m_TagString: Untagged
@@ -100,6 +101,23 @@ MeshCollider:
   m_CookingOptions: 14
   m_SkinWidth: 0.01
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &114531566812790530
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1188414726294622}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a6bda01ffb3242e0968829da2cece81, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  url: ws://10.0.0.198:3000/socket.io/?EIO=4&transport=websocket
+  autoConnect: 0
+  reconnectDelay: 5
+  ackExpirationTime: 1800
+  pingInterval: 25
+  pingTimeout: 60
 --- !u!114 &114598121930544232
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -122,3 +140,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96ade37caa4fc41548fbc056673d9667, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IRCamera: {fileID: 0}

@@ -74,6 +74,7 @@
     <Compile Include="Assets\GoogleARCore\SDK\Scripts\Editor\ExamplePreprocessBuild.cs" />
     <Compile Include="Assets\GoogleARCore\SDK\Scripts\Editor\PreprocessBuildBase.cs" />
     <Compile Include="Assets\GoogleARCore\SDK\Scripts\Editor\RequiredOptionalPreprocessBuild.cs" />
+    <Compile Include="Assets\SocketIO\JSONObject\Editor\JSONChecker.cs" />
     <None Include="Assets\PlayServicesResolver\Editor\play-services-resolver_v1.2.88.0.txt" />
     <None Include="Assets\GoogleARCore\Editor\ARCoreiOSDependencies.template" />
     <Reference Include="UnityEditor.StandardEvents">
