@@ -1,5 +1,8 @@
-﻿using UnityEngine;
+﻿using Project.Networking;
+using UnityEngine;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 
 public class TexturePainter_RC : MonoBehaviour
 {
@@ -22,7 +25,9 @@ public class TexturePainter_RC : MonoBehaviour
     static int x;
     static int y;
 
-    Texture2D canvas;
+    public static Texture2D canvas;
+
+    private NetworkManager network;
 
     //1024x768 is the IR input space
 
@@ -44,6 +49,35 @@ public class TexturePainter_RC : MonoBehaviour
     void Update()
     {
         MousePressed();          
+    }
+
+    public void applyUpdates(List<NetworkManager.PixelUpdate> updates)
+    {
+        foreach (NetworkManager.PixelUpdate update in updates)
+        {
+            canvas.SetPixel(update.x, update.y, update.color);
+        }
+    }
+
+    private void updatePixels(List<NetworkManager.PixelUpdate> updates)
+    {
+        List<NetworkManager.PixelUpdate> trueUpdates = new List<NetworkManager.PixelUpdate>();
+        foreach (NetworkManager.PixelUpdate update in updates)
+        {
+            if (!canvas.GetPixel(update.x, update.y).Equals(update.color))
+            {
+                canvas.SetPixel(update.x, update.y, update.color);
+                trueUpdates.Add(update);
+            }
+        }
+
+        if (trueUpdates.Count > 0)
+            getNetwork().sendUpdates(trueUpdates);
+    }
+
+    private NetworkManager getNetwork()
+    {
+        return gameObject.GetComponent<NetworkManager>();
     }
 
     void CreateBackground()
@@ -89,7 +123,7 @@ public class TexturePainter_RC : MonoBehaviour
                         prevX = pixelCoords.x;
                         prevY = pixelCoords.y;
                     }
-                    DrawLine(prevX, prevY, pixelCoords.x, pixelCoords.y, foregroundColor);
+                    DrawLine(prevX, prevY, x, y, radius, foregroundColor, true);
                     prevX = pixelCoords.x;
                     prevY = pixelCoords.y;
                 }
@@ -137,14 +171,20 @@ public class TexturePainter_RC : MonoBehaviour
             //clear all
             else if (pixelCoords.x > 814 && pixelCoords.x < 910 && pixelCoords.y < 166 && pixelCoords.y > 13)
             {
-                for (int i = 0; i <= 800; i++)
-                {
-                    for (int j = 0; j <= canvasHeight; j++)
-                        canvas.SetPixel(i, j, backgroundColor);
-                }
-                canvas.Apply();
+                Clear(true);
             }
         }
+    }
+
+    public void Clear(bool broadcast)
+    {
+        for (int i = 0; i <= 800; i++)
+        {
+            for (int j = 0; j <= canvasHeight; j++)
+                canvas.SetPixel(i, j, backgroundColor);
+        }
+        canvas.Apply();
+        if (broadcast) getNetwork().Clear();
     }
 
     Vector2Int uv2PixelCoords(Vector2 uv)
@@ -174,7 +214,7 @@ public class TexturePainter_RC : MonoBehaviour
     }
 
 
-    void DrawCircle(int x, int y, Color color)
+    public void DrawCircle(int x, int y, int radius, Color color, Boolean broadcast)
     {
         //Debug.Log("x: " + x + ", y: " + y);
         for (int yn = -radius; yn <= radius; yn++)
@@ -184,16 +224,22 @@ public class TexturePainter_RC : MonoBehaviour
                 if (y + yn < canvasHeight && y + yn > 0 && x + xn < 800 && x + xn > 0)
                 {
                     if (xn * xn + yn * yn <= radius * radius && marker)
+                    {
                         canvas.SetPixel(x + xn, y + yn, color);
+                    }
                     else if (!marker)
+                    {
                         canvas.SetPixel(x + xn, y + yn, color);
+                    }
                 }
             }
         }
 
+        if (broadcast)
+            getNetwork().drawCircle(new NetworkManager.DrawCircle { x = x, y = y, radius = radius, color = color, sessionID = 0 });
     }
 
-    void Bresenham(int x0, int y0, int x1, int y1, bool reversedAxis, Color color)
+    void Bresenham(int x0, int y0, int x1, int y1, bool reversedAxis, int radius, Color color)
     {
         double deltax = x1 - x0;
         double deltay = y1 - y0;
@@ -203,9 +249,9 @@ public class TexturePainter_RC : MonoBehaviour
         for (int x = x0; x <= x1; x++)
         {
             if (reversedAxis)
-                DrawCircle(y, x, color);
+                DrawCircle(y, x, radius, color, false);
             else
-                DrawCircle(x, y, color);
+                DrawCircle(x, y, radius, color, false);
             error = error + deltaerr;
             if (error >= 0.5f)
             {
@@ -216,18 +262,31 @@ public class TexturePainter_RC : MonoBehaviour
         canvas.Apply();
     }
 
-    void DrawLine(int x0, int y0, int x1, int y1, Color color)
+    public void DrawLine(int x0, int y0, int x1, int y1, int radius, Color color, Boolean broadcast)
     {
         if (Math.Abs(y1 - y0) < Math.Abs(x1 - x0))
             if (x0 <= x1)
-                Bresenham(x0, y0, x1, y1, false, color);
+                Bresenham(x0, y0, x1, y1, false, radius, color);
             else
-                Bresenham(x1, y1, x0, y0, false, color);
+                Bresenham(x1, y1, x0, y0, false, radius, color);
         else
             if (y0 <= y1)
-            Bresenham(y0, x0, y1, x1, true, color);
+            Bresenham(y0, x0, y1, x1, true, radius, color);
         else
-            Bresenham(y1, x1, y0, x0, true, color);
+            Bresenham(y1, x1, y0, x0, true, radius, color);
+
+        if (broadcast)
+        {
+            getNetwork().drawLine(new NetworkManager.DrawLine
+            {
+                x0 = x0,
+                y0 = y0,
+                x1 = x1,
+                y1 = y1,
+                radius = radius,
+                color = color
+            });
+        }
     }
 
     class AndroidSerialHelperCallback : AndroidJavaProxy
