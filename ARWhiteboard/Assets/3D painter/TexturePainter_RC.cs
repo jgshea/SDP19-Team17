@@ -20,6 +20,8 @@ public class TexturePainter_RC : MonoBehaviour
     private Color backgroundColor;
     private Color prevColor;
 
+    private GUIStyle style = new GUIStyle();
+
     AndroidJavaObject serialHelper;
 
     static int x;
@@ -34,6 +36,7 @@ public class TexturePainter_RC : MonoBehaviour
     void Start()
     {
         IRCamera = GameObject.FindWithTag("IRCamera").GetComponent<Camera>();
+        IRCamera.aspect = 4f/ 3f;
         y = 0;
         foregroundColor = Color.black;
         backgroundColor = Color.clear;
@@ -304,10 +307,11 @@ public class TexturePainter_RC : MonoBehaviour
 
     void OnGUI()
     {
+        style.fontSize = 20;
         //string newString = "Connected: " + transform.rotation.x + ", " + transform.rotation.y + ", " + transform.rotation.z;
         //GUI.Label(new Rect(10,10,300,100), value); //Display new values
-        GUI.Label(new Rect(10, 30, 300, 100), x + ""); //Display new values
-        GUI.Label(new Rect(10, 50, 300, 100), y + ""); //Display new values
+        GUI.Label(new Rect(40, 40, 300, 100), x + "",style); //Display new values
+        GUI.Label(new Rect(40, 90, 300, 100), y + "",style); //Display new values
                                                        // Though, it seems that it outputs the value in percentage O-o I don't know why.
     }
 }

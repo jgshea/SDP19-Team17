@@ -14,8 +14,13 @@
     {
         public Button DeleteButton;
         public Button LockButton;
+        public Button StereoButton;
 
         public Camera FirstPersonCamera;
+        public Camera RegularCamera;
+        public Camera LeftCamera;
+        public Camera RightCamera;
+
         public GameObject DetectedPlanePrefab;
         public GameObject ARAndroidPrefab;
         public GameObject SearchingForPlaneUI;
@@ -31,11 +36,14 @@
         float zoomSpeed = 0.1f;
 
         private bool locked;
+        private bool stereoMode;
 
         public void Start()
         {
             DeleteButton.onClick.AddListener(Remove);
             LockButton.onClick.AddListener(Lock);
+            StereoButton.onClick.AddListener(ChangeCamera);
+            stereoMode = false;
             locked = false;
         }
 
@@ -184,6 +192,23 @@
         public void Lock()
         {
             locked = !locked;
+        }
+
+        public void ChangeCamera()
+        {
+            if(stereoMode)
+            {
+                RegularCamera.enabled = true;
+                LeftCamera.enabled = false;
+                RightCamera.enabled = false;
+            }
+            else
+            {
+                RegularCamera.enabled = false;
+                LeftCamera.enabled = true;
+                RightCamera.enabled = true;
+            }
+            stereoMode = !stereoMode;
         }
 
         public void _SpawnARObject()
