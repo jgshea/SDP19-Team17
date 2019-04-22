@@ -40,7 +40,7 @@ public class TexturePainter_RC : MonoBehaviour
         y = 0;
         foregroundColor = Color.black;
         backgroundColor = Color.clear;
-        radius = 6;
+        radius = 4;
         marker = true;
         CreateBackground();
         AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
@@ -143,10 +143,6 @@ public class TexturePainter_RC : MonoBehaviour
                 pixelCoords.y < 641 && pixelCoords.y > 449 && radius > 2)
             {
                 radius--;
-                /*
-                GetComponent<MeshCollider>().enabled = false;
-                StartCoroutine(Wait(1));
-                GetComponent<MeshCollider>().enabled = true;*/
             }
             //change size2
             else if (pixelCoords.x > 852 && pixelCoords.x < 935 && pixelCoords.y < 641 && pixelCoords.y > 449)
