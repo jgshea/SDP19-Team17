@@ -2,8 +2,9 @@
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets/3D painter/TexturePainter_RC.cs">
     <Files>
       <File FileName="Assets/3D painter/TexturePainter.cs" Line="80" Column="10" />
-      <File FileName="Assets/3D painter/TexturePainter_RC.cs" Line="25" Column="36" />
-      <File FileName="Assets/Scripts/SceneController.cs" Line="46" Column="32" />
+      <File FileName="Assets/3D painter/TexturePainter_RC.cs" Line="48" Column="20" />
+      <File FileName="Assets/Scripts/SceneController.cs" Line="194" Column="34" />
+      <File FileName="Assets/GoogleARCore/Examples/Common/Scripts/DetectedPlaneGenerator.cs" Line="92" Column="17" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />

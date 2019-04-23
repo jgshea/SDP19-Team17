@@ -21,6 +21,8 @@
         public Camera LeftCamera;
         public Camera RightCamera;
 
+        public GameObject PlaneGenerator;
+        public GameObject PointCloud;
         public GameObject DetectedPlanePrefab;
         public GameObject ARAndroidPrefab;
         public GameObject SearchingForPlaneUI;
@@ -37,9 +39,11 @@
 
         private bool locked;
         private bool stereoMode;
+        private bool showPlanes;
 
         public void Start()
         {
+            showPlanes = true;
             DeleteButton.onClick.AddListener(Remove);
             LockButton.onClick.AddListener(Lock);
             StereoButton.onClick.AddListener(ChangeCamera);
@@ -187,6 +191,7 @@
             Destroy(ARObject);
             CurrentNumberOfGameObjects -= 1;
             locked = false;
+            OnTogglePlanes(true);
         }
 
         public void Lock()
@@ -209,6 +214,20 @@
                 RightCamera.enabled = true;
             }
             stereoMode = !stereoMode;
+        }
+
+        public void OnTogglePlanes(bool flag)
+        {
+            showPlanes = flag;
+            foreach (GameObject plane in GameObject.FindGameObjectsWithTag("trackedPlane"))
+            {
+                Renderer r = plane.GetComponent<Renderer>();
+                DetectedPlaneVisualizer t = plane.GetComponent<DetectedPlaneVisualizer>();
+                r.enabled = flag;
+                t.enabled = flag;
+            }
+            PointCloud.SetActive(flag);
+            PlaneGenerator.GetComponent<DetectedPlaneGenerator>().HideNewPlanes(!flag);
         }
 
         public void _SpawnARObject()
@@ -244,12 +263,7 @@
                             var anchor = hit.Trackable.CreateAnchor(hit.Pose);
                             ARObject.transform.parent = anchor.transform;
                             CurrentNumberOfGameObjects = CurrentNumberOfGameObjects + 1;
-
-                            // Hide Plane once ARObject is Instantiated
-                            foreach (GameObject Temp in DetectedPlaneGenerator.instance.PLANES) //RK
-                            {
-                                Temp.SetActive(false);
-                            }
+                            OnTogglePlanes(false);
                         }
 
                     }

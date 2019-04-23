@@ -27,9 +27,14 @@ public class TexturePainter_RC : MonoBehaviour
     static int x;
     static int y;
 
+    static int pixX;
+    static int pixY;
+
     public static Texture2D canvas;
 
     private NetworkManager network;
+
+    private string clicked = "Not yet";
 
     //1024x768 is the IR input space
 
@@ -51,7 +56,7 @@ public class TexturePainter_RC : MonoBehaviour
 
     void Update()
     {
-        MousePressed();          
+        MousePressed();      
     }
 
     public void applyUpdates(List<NetworkManager.PixelUpdate> updates)
@@ -91,8 +96,14 @@ public class TexturePainter_RC : MonoBehaviour
         canvas = new Texture2D(canvasWidth, canvasHeight, TextureFormat.ARGB32, false);
         canvas.SetPixels(tex.GetPixels());
         GetComponent<MeshRenderer>().material.SetTexture("_MainTex", canvas);
+        for (int i = 0; i <= 800; i++)
+        {
+            for (int j = 0; j <= canvasHeight; j++)
+                canvas.SetPixel(i, j, backgroundColor);
+        }
         canvas.Apply();
         prevColor = foregroundColor;
+       
     }
 
     void MousePressed()
@@ -114,6 +125,8 @@ public class TexturePainter_RC : MonoBehaviour
         //if (Physics.Raycast(origin,direction, out hitInfo))
         {
             var pixelCoords = uv2PixelCoords(hitInfo.textureCoord);
+            pixX = pixelCoords.x;
+            pixY = pixelCoords.y;
             //800
             //draw
             if (pixelCoords.x < 800)
@@ -133,44 +146,66 @@ public class TexturePainter_RC : MonoBehaviour
             }
             //change color
             else if (pixelCoords.x > 837 && pixelCoords.x < 986 &&
-                pixelCoords.y < 946 && pixelCoords.y > 737 && canvas.GetPixel(pixelCoords.x, pixelCoords.y) != backgroundColor)
+                pixelCoords.y < 457 && pixelCoords.y > 342 && canvas.GetPixel(pixelCoords.x, pixelCoords.y) != backgroundColor)
             {
                 foregroundColor = canvas.GetPixel(pixelCoords.x, pixelCoords.y);
+                dispColor(canvas.GetPixel(pixelCoords.x, pixelCoords.y));
                 prevColor = canvas.GetPixel(pixelCoords.x, pixelCoords.y);
             }
             //change size1
             else if (pixelCoords.x > 814 && pixelCoords.x < 852 &&
-                pixelCoords.y < 641 && pixelCoords.y > 449 && radius > 2)
+                pixelCoords.y < 311 && pixelCoords.y > 170 && radius > 1)
             {
                 radius--;
             }
             //change size2
-            else if (pixelCoords.x > 852 && pixelCoords.x < 935 && pixelCoords.y < 641 && pixelCoords.y > 449)
+            else if (pixelCoords.x > 852 && pixelCoords.x < 935 && pixelCoords.y < 311 && pixelCoords.y > 170)
             {
-                radius = 6;
+                radius = 4;
             }
             //change size3
             else if (pixelCoords.x > 935 && pixelCoords.x < 1009 &&
-                pixelCoords.y < 641 && pixelCoords.y > 449 && radius < 50)
+                pixelCoords.y < 311 && pixelCoords.y > 170 && radius < 10)
             {
                 radius += 1;
             }
             //marker tool
-            else if (pixelCoords.x > 814 && pixelCoords.x < 910 && pixelCoords.y < 382 && pixelCoords.y > 188)
+            else if (pixelCoords.x > 915 && pixelCoords.x < 1009 && pixelCoords.y < 159 && pixelCoords.y > 74)
             {
                 marker = true;
                 foregroundColor = prevColor;
+                dispColor(foregroundColor);
             }
             //eraser tool
-            else if (pixelCoords.x > 915 && pixelCoords.x < 1009 && pixelCoords.y < 382 && pixelCoords.y > 188)
+            else if (pixelCoords.x > 814 && pixelCoords.x < 910 && pixelCoords.y < 159 && pixelCoords.y > 74)
             {
                 marker = false;
                 foregroundColor = backgroundColor;
+                dispColor(foregroundColor);
             }
             //clear all
-            else if (pixelCoords.x > 814 && pixelCoords.x < 910 && pixelCoords.y < 166 && pixelCoords.y > 13)
+            else if (pixelCoords.x > 915 && pixelCoords.x < 1009 && pixelCoords.y < 73 && pixelCoords.y > 14)
             {
                 Clear(true);
+            }
+            // save to png
+            else if(pixelCoords.x > 814 && pixelCoords.x < 910 && pixelCoords.y < 73 && pixelCoords.y > 14)
+            {
+                Texture2D newCanvas = new Texture2D(800, canvasHeight);
+                newCanvas.SetPixels(canvas.GetPixels(0, 0, 800, canvasHeight));
+
+                for (int i = 0; i <= 800; i++)
+                {
+                    for (int j = 0; j <= canvasHeight; j++)
+                        if (newCanvas.GetPixel(i, j) == Color.clear)
+                        {
+                            newCanvas.SetPixel(i, j, Color.white);
+                        }
+                }
+
+                byte[] bytes = newCanvas.EncodeToJPG();
+                NativeGallery.SaveImageToGallery(bytes, "whiteboards", "whiteboard_{0}.jpeg");
+                clicked = "Clicked!";
             }
         }
     }
@@ -185,6 +220,18 @@ public class TexturePainter_RC : MonoBehaviour
         canvas.Apply();*/
         CreateBackground();
         if (broadcast) getNetwork().Clear();
+    }
+
+    private void dispColor(Color color)
+    {
+        for (int i=940; i<970; i++)
+        {
+            for (int j=470; j<490; j++)
+            {
+                canvas.SetPixel(i, j, color);
+            }
+        }
+        canvas.Apply();
     }
 
     Vector2Int uv2PixelCoords(Vector2 uv)
@@ -308,7 +355,9 @@ public class TexturePainter_RC : MonoBehaviour
         //GUI.Label(new Rect(10,10,300,100), value); //Display new values
         GUI.Label(new Rect(40, 40, 300, 100), x + "",style); //Display new values
         GUI.Label(new Rect(40, 90, 300, 100), y + "",style); //Display new values
-                                                       // Though, it seems that it outputs the value in percentage O-o I don't know why.
+        GUI.Label(new Rect(40, 140, 300, 100), pixX + "", style); //Display new values
+        GUI.Label(new Rect(40, 190, 300, 100), pixY + "", style); //Display new values 
+        GUI.Label(new Rect(40, 240, 300, 100), clicked + "", style); //Display new values                                              
     }
 }
 

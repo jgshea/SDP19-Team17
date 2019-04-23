@@ -28,7 +28,8 @@ namespace GoogleARCore.Examples.Common
     /// Manages the visualization of detected planes in the scene.
     /// </summary>
     public class DetectedPlaneGenerator : MonoBehaviour
-    {
+    { 
+
         public static DetectedPlaneGenerator instance = null; //RK
         public List<GameObject> PLANES = new List<GameObject>(); //RK
 
@@ -42,6 +43,8 @@ namespace GoogleARCore.Examples.Common
         /// the application to avoid per-frame allocations.
         /// </summary>
         private List<DetectedPlane> m_NewPlanes = new List<DetectedPlane>();
+
+        private bool hideNewPlanes = false;
 
         /// <summary>
         /// The Unity Update method.
@@ -63,7 +66,6 @@ namespace GoogleARCore.Examples.Common
 
         }
 
-
         public void Update()
         {
             // Check that motion tracking is tracking.
@@ -82,8 +84,19 @@ namespace GoogleARCore.Examples.Common
                 GameObject planeObject = Instantiate(DetectedPlanePrefab, Vector3.zero, Quaternion.identity, transform);
                 PLANES.Add(planeObject); //RK
                 planeObject.GetComponent<DetectedPlaneVisualizer>().Initialize(m_NewPlanes[i]);
+                if (hideNewPlanes)
+                {
+                    planeObject.GetComponent<DetectedPlaneVisualizer>().enabled = false;
+                    planeObject.GetComponent<Renderer>().enabled = false;
+                }
 
             }
         }
+
+        public void HideNewPlanes(bool flag)
+        {
+            hideNewPlanes = flag;
+        }
+
     }
 }
